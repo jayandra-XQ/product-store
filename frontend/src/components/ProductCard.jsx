@@ -2,10 +2,24 @@ import { Box, Heading, HStack, IconButton, Image, Text, useColorModeValue } from
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import PropTypes from 'prop-types'
+import { useProductStore } from "../store/product";
+import { toast } from'react-toastify';
 
 const ProductCard = ({ product }) => {
   const textColor = useColorModeValue("gray.600", "gray.200");
   const bg = useColorModeValue("white", "gray.800")
+
+  const {deleteProduct}  = useProductStore()
+
+  const handleDeleteProduct = async (pid) => {
+    const {success}  = await deleteProduct(pid)
+    if(success) {
+      toast.success("product deleted successfully")
+    } else {
+      toast.error(`failed to delete product ${product.name}`)
+    }
+  }
+  
   return (
     <Box
       shadow='lg'
@@ -29,7 +43,7 @@ const ProductCard = ({ product }) => {
 
         <HStack spacing={2}>
           <IconButton icon={<FaEdit /> } colorScheme='blue' />
-          <IconButton icon={<MdDelete />}  colorScheme="red"/>
+          <IconButton icon={<MdDelete />} onClick={() => handleDeleteProduct(product._id)} colorScheme="red"/>
         </HStack>
       </Box>
 
